@@ -1,0 +1,48 @@
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+
+# Variables de entorno (nunca subir credenciales reales)
+.env
+.env.local
+.env.*.local
+
+# Bytecode y cache de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribución / empaquetado
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Testing y cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Logs
+*.log
+
+# Bases de datos locales / dumps
+*.sqlite3
+*.dump
+
+# Docker
+docker/postgres_data/
+docker/redis_data/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
