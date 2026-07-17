@@ -45,8 +45,9 @@ Sistema conversacional de nivel empresarial para banca, construido con **LangGra
    ```
 4. Levantar la API local:
    ```bash
-   uvicorn app.main:app --reload
+   python -m app.main
    ```
+   > En Windows, `uvicorn app.main:app --reload` falla: uvicorn crea el event loop antes de importar la app, y psycopg async no soporta el `ProactorEventLoop` por defecto. `python -m app.main` corre `main.py` como entrypoint, que fija el event loop correcto antes de invocar uvicorn.
 5. Exponer el webhook con ngrok y configurarlo en el panel de Meta (developers.facebook.com → tu app → WhatsApp → Configuration):
    ```bash
    ngrok http 8000
