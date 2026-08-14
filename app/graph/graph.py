@@ -3,26 +3,32 @@ from __future__ import annotations
 import logging
 from typing import Literal
 
+from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
+from langgraph.prebuilt import ToolNode
 
 from app.db.session import CONNINFO
 from app.graph.state import FinancialAdvisorState
+from app.tools.consultar_saldo import consultar_saldo
+from app.tools.historial_movimientos import historial_movimientos
 
 logger = logging.getLogger("app.graph")
 
-_llm: ChatOpenAI | None = None
+TOOLS = [consultar_saldo, historial_movimientos]
+
+_llm: Runnable | None = None
 
 
-def _get_llm() -> ChatOpenAI:
+def _get_llm() -> Runnable:
     # Instanciación perezosa: ChatOpenAI valida OPENAI_API_KEY al crearse, y
     # si esto corriera a nivel de módulo, cualquier `import` de este archivo
     # fallaría sin la key seteada (ej. al correr tests o el checkpointer solo).
     global _llm
     if _llm is None:
-        _llm = ChatOpenAI(model="gpt-4.1-mini")
+        _llm = ChatOpenAI(model="gpt-4.1-mini").bind_tools(TOOLS)
     return _llm
 
 
@@ -57,9 +63,7 @@ async def call_model(state: FinancialAdvisorState) -> dict:
     return {"messages": [response]}
 
 
-async def execute_tools(state: FinancialAdvisorState) -> dict:
-    # TODO: reemplazar por ToolNode(tools) cuando existan las tools de la sección 7.
-    return {}
+execute_tools = ToolNode(TOOLS)
 
 
 async def respond(state: FinancialAdvisorState) -> dict:
