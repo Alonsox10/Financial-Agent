@@ -12,12 +12,14 @@ from langgraph.prebuilt import ToolNode
 
 from app.db.session import CONNINFO
 from app.graph.state import FinancialAdvisorState
+from app.tools.calcular_intereses import calcular_intereses
 from app.tools.consultar_saldo import consultar_saldo
 from app.tools.historial_movimientos import historial_movimientos
+from app.tools.obtener_perfil_usuario import obtener_perfil_usuario
 
 logger = logging.getLogger("app.graph")
 
-TOOLS = [consultar_saldo, historial_movimientos]
+TOOLS = [consultar_saldo, historial_movimientos, calcular_intereses, obtener_perfil_usuario]
 
 _llm: Runnable | None = None
 
